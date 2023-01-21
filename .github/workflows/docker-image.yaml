@@ -14,6 +14,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
     - uses: actions/checkout@v3
     
@@ -57,10 +59,9 @@ jobs:
       uses: docker/login-action@v2.1.0
       if: github.event_name != 'pull_request'
       with:
-        # Username used to log against the Docker registry
-        username: teslamint
-        # Password or personal access token used to log against the Docker registry
-        password: ${{ secrets.DOCKER_PAT }}
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and push Docker images
       # You may pin to the exact commit or the version.
@@ -70,6 +71,6 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         # List of build-time variables
         build-args: "PLEROMA_VER=${{ env.COMMIT_ID }}"
-        tags: "teslamint/akkoma:${{ env.BRANCH }},teslamint/akkoma:${{ env.COMMIT_ID }}"
+        tags: "ghcr.io/${{ github.repository }}:${{ env.BRANCH }},ghcr.io/${{ github.repository }}:${{ env.COMMIT_ID }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
