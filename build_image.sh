@@ -5,7 +5,7 @@ set -u
 set -o pipefail
 
 BRANCH=develop
-COMMIT_HASH=$(curl "https://akkoma.dev/api/v1/repos/AkkomaGang/akkoma/branches/$BRANCH" | jq -r '.commit.id')
+COMMIT_HASH=$(curl "https://akkoma.dev/api/v1/repos/hufman/akkoma/branches/$BRANCH" | jq -r '.commit.id')
 COMMIT_ID=${COMMIT_HASH:-$BRANCH}
 
 # check image already built
