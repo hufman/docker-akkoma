@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "stable", "develop" ]
+    branches: [ "stable", "develop", "test-*" ]
     tags:
       - stable-*
       - develop-*
@@ -38,6 +38,14 @@ jobs:
       if: ${{ startsWith(github.ref_name, 'develop-') }}
       run: |
         COMMIT_ID=${GITHUB_REF_NAME#develop-}
+        echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
+        BRANCH="$(echo $GITHUB_REF_NAME | sed s,-${COMMIT_ID},,)"
+        echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+
+    - name: set commit id from tag (test)
+      if: ${{ startsWith(github.ref_name, 'test-') }}
+      run: |
+        COMMIT_ID=${GITHUB_REF_NAME#test-}
         echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
         BRANCH="$(echo $GITHUB_REF_NAME | sed s,-${COMMIT_ID},,)"
         echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
